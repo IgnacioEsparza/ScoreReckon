@@ -5,9 +5,11 @@
  */
 package score.frame;
 
+import com.sun.javafx.tk.FileChooserType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -102,11 +104,11 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(46, 46, 46)
                 .addGroup(jdAgregarAsignaturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jdAgregarAsignaturaLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jdAgregarAsignaturaLayout.createSequentialGroup()
                         .addGroup(jdAgregarAsignaturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jdAgregarAsignaturaLayout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jdAgregarAsignaturaLayout.createSequentialGroup()
                                 .addComponent(jtfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 78, Short.MAX_VALUE)))
@@ -130,14 +132,13 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(jdAgregarAsignaturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtfNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btAceptar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(30, 30, 30)
                 .addGroup(jdAgregarAsignaturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jdAgregarAsignaturaLayout.createSequentialGroup()
+                    .addComponent(btExaminar)
+                    .addGroup(jdAgregarAsignaturaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btExaminar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(btCancelar)
                 .addContainerGap())
         );
@@ -268,7 +269,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuEliminarActionPerformed
 
     private void btAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAceptarActionPerformed
-        Agregar();
+        agregar(jtfNombre.getText());
     }//GEN-LAST:event_btAceptarActionPerformed
 
     private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
@@ -276,31 +277,51 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btCancelarActionPerformed
 
     private void btExaminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExaminarActionPerformed
-
+        JFileChooser fCGuardar = new JFileChooser(new File("c:\\"));
+        accionesFSGuardar(fCGuardar);
+        
     }//GEN-LAST:event_btExaminarActionPerformed
 
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
         JFileChooser selectorFile = (JFileChooser) evt.getSource();
-        accionesFileChooser(evt.getActionCommand(), selectorFile);
+        accionesFSAbrir(evt.getActionCommand(), selectorFile);
 
     }//GEN-LAST:event_jFileChooser1ActionPerformed
 
     private void jPanelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanelMouseClicked
 
     }//GEN-LAST:event_jPanelMouseClicked
-    public void accionesFileChooser(String command, JFileChooser selectorFile) {
-        if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+    public void accionesFSGuardar(JFileChooser fCGuardar){
+        fCGuardar.setDialogTitle("Guardar Asignatura");
+        int opcion = fCGuardar.showSaveDialog(null);
+        if(opcion == JFileChooser.APPROVE_OPTION){
+           String contenido = jtfNombre.getText();
+           File fi = fCGuardar.getSelectedFile();
+           String nomBot = fCGuardar.getSelectedFile().getName();
+            try {
+                FileWriter fw = new FileWriter(fi.getPath());
+                fw.write(contenido);
+                fw.flush();
+                fw.close();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+            agregar(nomBot);
+        }
+    }
+    
+    public void accionesFSAbrir(String seleccion, JFileChooser selectorFile) {
+        if (seleccion.equals(JFileChooser.APPROVE_SELECTION)) {
             File selectFile = selectorFile.getSelectedFile();
             JOptionPane.showMessageDialog(this, "Ruta : " + selectFile.getAbsolutePath() + "\n"
                     + "Archivo : " + selectFile.getName());
-        } else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+        } else if (seleccion.equals(JFileChooser.CANCEL_SELECTION)) {
             jdCargar.dispose();
         }
     }
 
-    public void Agregar() {
+    public void agregar(String nomBoton) {
 
-        String nomBoton = jtfNombre.getText();
         JButton boton = new JButton(nomBoton);
         jPanel.add(boton);
         listaBotones.add(boton);

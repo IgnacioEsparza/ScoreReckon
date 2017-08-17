@@ -9,6 +9,7 @@ import score.frame.Principal;
 
 /**
  *
+ * @version 1.0.2
  * @author Ignacio Esparza
  */
 public class ScoreReckon {
@@ -16,10 +17,9 @@ public class ScoreReckon {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) { 
+    public static void main(String[] args) {
         Principal p = new Principal();
         p.setVisible(true);
     }
-    
-       
+
 }
